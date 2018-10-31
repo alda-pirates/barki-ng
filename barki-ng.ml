@@ -14,22 +14,22 @@ let sample_rate = 48000
 
 
 (* === Oscillators === *)
-let sawtooth freq duration = []
-let sine     freq duration = []
+let sawtooth freq duration amplitude = []
+let sine     freq duration amplitude = []
 
-let square_cycle samples =
+let square_cycle samples amplitude =
   let half_cycle = samples / 2 in
   List.map (fun _ -> 0) (range 0 half_cycle) @
-    List.map (fun _ -> 20) (range 0 half_cycle)
+    List.map (fun _ -> amplitude) (range 0 half_cycle)
 
-let square   freq duration =
+let square   freq duration amplitude =
   let samples_needed = duration * sample_rate in
   let samples_per_cycle = sample_rate / freq in
   let cycles_needed = samples_needed / samples_per_cycle in
   List.flatten @@
-    List.map (fun _ -> square_cycle samples_per_cycle) (range 0 cycles_needed)
+    List.map (fun _ -> square_cycle samples_per_cycle amplitude) (range 0 cycles_needed)
 
-let triangle freq duration = []
+let triangle freq duration amplitude = []
 
 type oscillator_type =
   | Sawtooth
@@ -62,11 +62,11 @@ let get_filter step =
   | Noop -> noop
 
 
-let run step duration =
+let run step duration amplitude =
   let osc    = get_oscillator step in
   let freq   = step.step_freq in
   let filter = get_filter step in
-  filter @@ osc freq duration
+  filter @@ osc freq duration amplitude
 
 
 (* Functions for manipulating raw PCM (L8) files. *)
@@ -81,6 +81,6 @@ let pcm_close channel =
 
 let () =
   let file = pcm_open "out.l8" in
-  pcm_append file (run {step_osc=Square; step_freq=220; step_filter=Noop} 3);
+  pcm_append file (run {step_osc=Square; step_freq=220; step_filter=Noop} 3 20);
   pcm_close file;
   ()
