@@ -20,7 +20,7 @@ let sine     freq duration = []
 let square_cycle samples =
   let half_cycle = samples / 2 in
   List.map (fun _ -> 0) (range 0 half_cycle) @
-    List.map (fun _ -> 1) (range 0 half_cycle)
+    List.map (fun _ -> 20) (range 0 half_cycle)
 
 let square   freq duration =
   let samples_needed = duration * sample_rate in
