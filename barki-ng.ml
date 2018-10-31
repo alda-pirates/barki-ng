@@ -28,7 +28,7 @@ let rec square' cycle cycles_needed =
 let square   freq duration amplitude =
   let samples_needed = duration * sample_rate in
   let samples_per_cycle = sample_rate / freq in
-  let cycles_needed = samples_needed / samples_per_cycle in
+  let cycles_needed = samples_needed / freq in
   let cycle = square_cycle samples_per_cycle amplitude in
   square' cycle cycles_needed
 
