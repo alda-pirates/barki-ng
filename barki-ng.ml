@@ -3,12 +3,6 @@
 #load "unix.cma"
 #load "graphics.cma"
 
-let rec range' a b acc =
-  if b < a then acc
-  else range' a (b - 1) (b :: acc)
-let range a b = range' a b []
-
-
 (* Sample rate in Hertz. *)
 let sample_rate = 48000
 
@@ -17,17 +11,26 @@ let sample_rate = 48000
 let sawtooth freq duration amplitude = []
 let sine     freq duration amplitude = []
 
+let rec square_cycle' samples_needed amplitude =
+  if samples_needed > 0
+    then amplitude :: (square_cycle' (samples_needed - 1) amplitude)
+    else [amplitude]
 let square_cycle samples amplitude =
   let half_cycle = samples / 2 in
-  List.map (fun _ -> 0) (range 0 half_cycle) @
-    List.map (fun _ -> amplitude) (range 0 half_cycle)
+  (square_cycle' half_cycle 0) @
+    (square_cycle' half_cycle amplitude)
+
+let rec square' cycle cycles_needed =
+  if cycles_needed > 0
+    then cycle @ (square' cycle (cycles_needed - 1))
+    else []
 
 let square   freq duration amplitude =
   let samples_needed = duration * sample_rate in
   let samples_per_cycle = sample_rate / freq in
   let cycles_needed = samples_needed / samples_per_cycle in
-  List.flatten @@
-    List.map (fun _ -> square_cycle samples_per_cycle amplitude) (range 0 cycles_needed)
+  let cycle = square_cycle samples_per_cycle amplitude in
+  square' cycle cycles_needed
 
 let triangle freq duration amplitude = []
 
