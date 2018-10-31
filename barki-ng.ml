@@ -39,7 +39,7 @@ type oscillator_type =
 
 (* === Filters === *)
 (* A filter that does nothing. *)
-let noop samples time = samples
+let noop samples = samples
 
 type filter_type =
   | Noop
@@ -51,20 +51,20 @@ type step_type = {  step_osc:       oscillator_type;
                     step_filter:    filter_type }
 
 let get_oscillator step =
-  match (step_osc step) with
+  match step.step_osc with
   | Sawtooth -> sawtooth
   | Sine     -> sine
   | Square   -> square
   | Triangle -> triangle
 
 let get_filter step =
-  match (step_filter step) with
+  match step.step_filter with
   | Noop -> noop
 
 
 let run step duration =
   let osc    = get_oscillator step in
-  let freq   = step_freq step in
+  let freq   = step.step_freq in
   let filter = get_filter step in
   filter @@ osc freq duration
 
@@ -81,4 +81,6 @@ let pcm_close channel =
 
 let () =
   let file = pcm_open "out.l8" in
-  run {step_osc=Square; step_freq=220; step_filter=Noop} 3
+  pcm_append file (run {step_osc=Square; step_freq=220; step_filter=Noop} 3);
+  pcm_close file;
+  ()
