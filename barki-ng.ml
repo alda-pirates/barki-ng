@@ -28,7 +28,7 @@ let square   freq duration =
   let cycles_needed = samples_needed / samples_per_cycle in
   List.flatten @@
     List.map (fun _ -> square_cycle samples_per_cycle) (range 0 cycles_needed)
-*)
+
 let triangle freq duration = []
 
 type oscillator_type =
