@@ -8,8 +8,28 @@ let sample_rate = 48000
 
 
 (* === Oscillators === *)
+(*
+let rec sawtooth_cycle samples_left samples_per_cycle amplitude =
+  let time = samples_per_cycle / amplitude in
+  if samples_left > 0
+    then (2 * (time / 2) * amplitude) :: (sawtooth_cycle (samples_left - 1) samples_per_cycle amplitude)
+    else []
+let rec sawtooth' cycle cycles_needed =
+  if cycles_needed > 0
+    then cycle @ (sawtooth' cycle (cycles_needed - 1))
+    else cycle
+let sawtooth freq duration amplitude =
+  let samples_needed = duration * sample_rate in
+  let samples_per_cycle = sample_rate / freq in
+  let cycles_needed = samples_needed / freq in
+  let cycle = sawtooth_cycle samples_per_cycle samples_per_cycle amplitude in
+  sawtooth' cycle cycles_needed
+*)
 let sawtooth freq duration amplitude = []
+
+
 let sine     freq duration amplitude = []
+
 
 let rec square_cycle' samples_needed amplitude =
   if samples_needed > 0
@@ -24,13 +44,13 @@ let rec square' cycle cycles_needed =
   if cycles_needed > 0
     then cycle @ (square' cycle (cycles_needed - 1))
     else []
-
 let square   freq duration amplitude =
   let samples_needed = duration * sample_rate in
   let samples_per_cycle = sample_rate / freq in
   let cycles_needed = samples_needed / freq in
   let cycle = square_cycle samples_per_cycle amplitude in
   square' cycle cycles_needed
+
 
 let triangle freq duration amplitude = []
 
