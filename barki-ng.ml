@@ -31,25 +31,24 @@ let sawtooth freq duration amplitude = []
 let sine     freq duration amplitude = []
 
 
-let rec square_cycle' samples_needed amplitude =
-  if samples_needed > 0
-    then amplitude :: (square_cycle' (samples_needed - 1) amplitude)
-    else [amplitude]
-let square_cycle samples amplitude =
+let rec square_cycle samples_needed samples amplitude acc =
   let half_cycle = samples / 2 in
-  (square_cycle' half_cycle 0) @
-    (square_cycle' half_cycle amplitude)
+  let value = if samples_needed > half_cycle then amplitude else 0 in
+  if samples_needed < 0
+    then acc
+    else square_cycle (samples_needed - 1) samples amplitude (value :: acc)
 
-let rec square' cycle cycles_needed =
-  if cycles_needed > 0
-    then cycle @ (square' cycle (cycles_needed - 1))
-    else []
+let rec square' cycle cycles_needed acc =
+  if cycles_needed < 0
+    then acc
+    else square' cycle (cycles_needed - 1) (acc @ cycle)
+
 let square   freq duration amplitude =
-  let samples_needed = duration * sample_rate in
+  let samples_needed    = duration * sample_rate in
   let samples_per_cycle = sample_rate / freq in
-  let cycles_needed = samples_needed / freq in
-  let cycle = square_cycle samples_per_cycle amplitude in
-  square' cycle cycles_needed
+  let cycles_needed     = samples_needed / freq in
+  let cycle = square_cycle samples_per_cycle samples_per_cycle amplitude [] in
+  square' cycle cycles_needed []
 
 
 let triangle freq duration amplitude = []
