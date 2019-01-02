@@ -103,6 +103,8 @@ let pcm_close channel =
 
 let () =
   let file = pcm_open "out.l8" in
-  pcm_append file (run {step_osc=Square; step_freq=220; step_filter=Noop} 3 20);
+  let data = run {step_osc=Square; step_freq=220; step_filter=Noop} 3 20 in
+  print_endline "awoo2";
+  pcm_append file data;
   pcm_close file;
   ()
